@@ -1,0 +1,147 @@
+<html>
+  <head>
+    <style>
+      .Portal {
+        border-color: lightblue;
+        border-style: solid;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
+      Tema 2 - Seguridad
+    </h1>
+    <br/>
+    <ul>
+        <li><a isRemReference="true" href="../../Document/Status.html">Status</a>―<a isRemReference="true" href="../../Document/Status/Draft.html">Draft</a> #Status</li>
+        <li>Las 4 As→Autenticación, Autorización, Acceso y Auditoría</li>
+        <li>Tareas de seguridad 
+            <ul>
+                <li>Asegurarse de que la instalación y configuración de la BD es segura</li>
+                <li>Gestionar aspectos de seguridad de las cuentas de usuario</li>
+                <li>Asegurarse de que las conexiones de red son seguras</li>
+                <li>Cifrado de datos sensibles</li>
+                <li>Asegurar que la base de datos no tiene vulnerabilidades de seguridad</li>
+                <li>Decidir qué componentes de BD auditar y cómo</li>
+                <li>Descarga e instalación de parches de seguridad</li>
+            </ul>
+        </li>
+        <li>Parámetros de Seguridad
+            <ul>
+                <li><pre class="language-sql"><code class="language-sql">ALTER SYSTEM SET var=valor
+ALTER SYSTEM RESET var=valor	</code></pre></li>
+            </ul>
+        </li>
+        <li>Gestión de usuarios en SO
+            <ul>
+                <li>Crear un usuario con opción external 
+                    <ul>
+                        <li><pre class="language-sql"><code class="language-sql">Create user "OPS$HOST\USUARIO" identified externally;</code></pre></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>Gestión de usuarios en Oracle
+            <ul>
+                <li><pre class="language-sql"><code class="language-sql">CREATE PROFILE Perfil_1 LIMIT
+	SESSIONS_PER_USER 3 -- Máximo núm. de sesiones para ese usuario.
+	CONNECT_TIME UNLIMITED -- Duración máxima de la conexión.
+	IDLE_TIME 10 -- Minutos de tiempo muerto en una sesión. 
+	FAILED_LOGIN_ATTEMPTS 4 -- no máximo de intentos para bloquear cuenta. 
+	PASSWORD_LIFE_TIME 90 -- No de días de expiración de la password. 
+	PASSWORD_GRACE_TIME 3; -- Periodo de gracia después de los 90 días.</code></pre><pre class="language-sql"><code class="language-sql">Resource_limit=true </code></pre></li>
+            </ul>
+        </li>
+        <li>Tablespaces
+            <ul>
+                <li>Tablespaces←Las divisiones lógicas que hace Oracle de los datos de una BD.</li>
+                <li>USERS←El tablespace por defecto para todos los usuarios. </li>
+                <li><pre class="language-sql"><code class="language-sql">SELECT * from DBA_TABLESPACES; -- Comprueba los ts existentes create tablespace nombre datafile ’nombrefichero.dbf' size 10M autoextend on; /*Crea un ts con un fichero de tamaño 10M autoextensible. Para que un usuario pueda usarlo debe asignársele una quota de uso. */</code></pre></li>
+            </ul>
+        </li>
+        <li>Crear usuarios
+            <ul>
+                <li>IDENTIFIED←Única cláusula obligatoria al crear usuarios</li>
+                <li>Un usuario recién creado no tiene ningún privilegio</li>
+                <li><pre class="language-sql"><code class="language-sql"> CREATE USER Pepe IDENTIFIED BY Clave_Pepe
+  TEMPORARY TABLESPACE temp_ts -- Tablespace para los seg. temporales.
+  DEFAULT TABLESPACE data_ts -- Tabl. por defecto para sus objetos.
+  QUOTA 100M ON test_ts -- Máximo espacio en ese Tablespace.
+  QUOTA 500K ON data_ts
+  PROFILE Perfil_1; -- Asigna el Perfil_1 al usuario.</code></pre></li>
+                <li>Modificar un usuario↔ALTER USER</li>
+                <li>Borrar un usuario↔DROP USER marta CASCADE
+                    <ul>
+                        <li>CASCADE↔Borrar todos los objetos que contiene</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>Roles
+            <ul>
+                <li><pre class="language-sql"><code class="language-sql">CREATE ROLE nombre_role 
+[NOT IDENTIFIED 
+|IDENTIFIED {BY password |
+			 USING [schema.]package |
+			 EXTERNALLY |
+			 GLOBALLY}];</code></pre></li>
+                <li><pre class="language-sql"><code class="language-sql">-- Ejemplo --
+CREATE ROLE Gestor IDENTIFIED BY 123;
+CREATE ROLE USUARIO_NORMAL;</code></pre> </li>
+            </ul>
+        </li>
+        <li>Permisos (GRANT y REVOKE)
+            <ul>
+                <li>Tipos de Permisos←SELECT, INSERT, DELETE, UPDATE, ALTER, REFERENCES, INDEX (para crear índices) y EXECUTE  </li>
+                <li>Tipos de Objetos←Tablas, Vistas, Secuencias, Procedimientos, Funciones, Vistas Materializadas  </li>
+                <li><pre class="language-sql"><code class="language-sql">GRANT <Lista_Permisos> [ON <Objeto>]
+TO <Usuarios> [WITH {GRANT|ADMIN} OPTION]</code></pre> </li>
+                <li><pre class="language-sql"><code class="language-sql"> REVOKE <Lista_Permisos> [ON <Objeto>] FROM <Usuario>;</code></pre></li>
+            </ul>
+        </li>
+        <li>Creación de vistas
+            <ul>
+                <li><pre class="language-sql"><code class="language-sql">Formato: CREATE [OR REPLACE] [[NO] FORCE] VIEW <NombreV> [(<Lista_Atrbs>)] AS (<Subconsulta>) [WITH READ ONLY];</code></pre></li>
+                <li>Es posible escribir sobre vistas que hayan sido creadas sobre una sola tabla y no usan funciones de agregación. </li>
+            </ul>
+        </li>
+        <li>Borrado de vistas 
+            <ul>
+                <li><pre class="language-sql"><code class="language-sql"> DROP VIEW <NombreV>;</code></pre></li>
+            </ul>
+        </li>
+        <li>Sinónimos 
+            <ul>
+                <li><pre class="language-sql"><code class="language-sql">CREATE [PUBLIC] SYNONYM <Nombre> FOR <Objeto>;</code></pre></li>
+            </ul>
+        </li>
+        <li>Snapshots
+            <ul>
+                <li><pre class="language-sql"><code class="language-sql">CREATE MATERIALIZED VIEW <Nombre> <Cláusulas> AS <subconsulta>;</code></pre>
+                    <ul>
+                        <li>Cláusulas
+                            <ul>
+                                <li><pre class="language-sql"><code class="language-sql">BUILD [INMEDIATE | DEFERRED]</code></pre></li>
+                                <li><pre class="language-sql"><code class="language-sql">[Refresh <Opciones> | NEVER REFRESH</code></pre>
+                                    <ul>
+                                        <li>Opciones
+                                            <ul>
+                                                <li><pre class="language-sql"><code class="language-sql">FAST --</code></pre></li>
+                                                <li><pre class="language-sql"><code class="language-sql">COMPLETE --Rehacer la consulta</code></pre></li>
+                                                <li><pre class="language-sql"><code class="language-sql">FORCE --alterna entre FAST y COMPLETE</code></pre> </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><pre class="language-javascript"><code class="language-javascript">select * from dict;</code></pre> </li>
+        <li></li>
+
+    </ul>
+    </body>
+</html>
