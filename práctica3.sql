@@ -53,3 +53,30 @@ SELECT COUNT(*) FROM PRUEBA WHERE CLAVE = 50000;
 - SELECT COUNT(*) FROM PRUEBA WHERE IDISPERSO = 50000;
 - SELECT COUNT(*) FROM PRUEBA WHERE ICONCENTRADO = 5;
 - SELECT COUNT(*) FROM PRUEBA WHERE BCONCENTRADO = 5;
+
+--EJERCICIO 5
+-- desde admin
+
+SELECT COUNT() FROM PRUEBA WHERE CLAVE = 50000;
+    319488  physical read total bytes
+    113  consistent gets
+
+SELECT COUNT() FROM PRUEBA WHERE DISPERSO = 50000;
+    4513792  physical read total bytes
+    691  consistent gets
+
+SELECT COUNT() FROM PRUEBA WHERE CONCENTRADO = 5;
+    4530176  physical read total bytes
+    691  consistent gets
+
+SELECT COUNT() FROM PRUEBA WHERE IDISPERSO = 50000;
+    212992  physical read total bytes
+    120  consistent gets
+
+SELECT COUNT() FROM PRUEBA WHERE ICONCENTRADO = 5;
+    491520  physical read total bytes
+    137  consistent gets
+
+SELECT COUNT() FROM PRUEBA WHERE BCONCENTRADO = 5;
+    368640  physical read total bytes
+    122  consistent gets
