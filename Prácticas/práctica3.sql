@@ -1,3 +1,5 @@
+-- Práctica 3: Seguridad Avanzada
+
 -- Ejercicio 2
 ALTER SYSTEM SET "WALLET_ROOT"='C:\Users\app\alumnos\Oracle_instalacion\wallet' scope=SPFILE;
 ALTER SYSTEM SET TDE_CONFIGURATION="KEYSTORE_CONFIGURATION=FILE" scope=both;
